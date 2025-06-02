@@ -1,31 +1,34 @@
+// src/pages/Dashboard.jsx
+
 import { useEffect, useState } from "react";
-import { getCuentas }        from "../api/cuentas";
-import { getTransacciones }  from "../api/transacciones";
+import { getCuentas, getTransacciones } from "../api/admin";
 
 export default function Dashboard() {
   const [cuentas, setCuentas] = useState(0);
-  const [aprob,   setAprob]   = useState(0);
-  const [rechaz,  setRechaz]  = useState(0);
-  const [monto,   setMonto]   = useState(0);
-  const [ultTx,   setUltTx]   = useState([]);
+  const [aprob, setAprob] = useState(0);
+  const [rechaz, setRechaz] = useState(0);
+  const [monto, setMonto] = useState(0);
+  const [ultTx, setUltTx] = useState([]);
 
   useEffect(() => {
     document.title = "Dashboard";
 
-    getCuentas().then(r => setCuentas(r.data.length));
+    getCuentas().then((r) => setCuentas(r.data.length));
 
-    getTransacciones().then(r => {
+    getTransacciones().then((r) => {
       const tx = r.data;
-      const ok = tx.filter(t => t.estado === "APROBADA");
-      const no = tx.filter(t => t.estado === "RECHAZADA");
+      const ok = tx.filter((t) => t.estado === "APROBADA");
+      const no = tx.filter((t) => t.estado === "RECHAZADA");
 
       setAprob(ok.length);
       setRechaz(no.length);
-      setMonto(ok.reduce((s, t) => s + (Number(t.monto)||0), 0));
+      setMonto(ok.reduce((s, t) => s + (Number(t.monto) || 0), 0));
 
-      setUltTx([...tx]
-        .sort((a,b) => new Date(b.fecha) - new Date(a.fecha))
-        .slice(0,10));
+      setUltTx(
+        [...tx]
+          .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+          .slice(0, 10)
+      );
     });
   }, []);
 
@@ -45,9 +48,9 @@ export default function Dashboard() {
 
       {/* Cards */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card label="Cuentas"        value={cuentas} />
-        <Card label="Tx Aprobadas"   value={aprob}   />
-        <Card label="Tx Rechazadas"  value={rechaz}  />
+        <Card label="Cuentas" value={cuentas} />
+        <Card label="Tx Aprobadas" value={aprob} />
+        <Card label="Tx Rechazadas" value={rechaz} />
         <Card label="Monto Aprobado" value={`$${monto.toFixed(2)}`} />
       </section>
 
@@ -58,7 +61,7 @@ export default function Dashboard() {
           <p className="text-gray-500">Sin transacciones aún</p>
         ) : (
           <ul className="divide-y text-sm">
-            {ultTx.map(t => (
+            {ultTx.map((t) => (
               <li key={t.id} className="py-2 flex justify-between">
                 <span>{t.estado}</span>
                 <span>${t.monto}</span>

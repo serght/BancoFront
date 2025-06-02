@@ -1,11 +1,18 @@
-// src/App.jsx
-
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Cuentas from "./pages/Cuentas";
 import Login from "./pages/login";
 import Register from "./pages/Register";
 import NavBar from "./components/NavBar";
+
+/**
+ * Componente para rutas protegidas.
+ * Verifica si existe un token en localStorage; de lo contrario redirige a /login.
+ */
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" replace />;
+}
 
 function AppWrapper() {
   const location = useLocation();
@@ -15,15 +22,44 @@ function AppWrapper() {
   const showNav = path !== "/login" && path !== "/register";
 
   return (
-    <div className="flex min-h-screen">
+    <div className="min-h-screen">
       {showNav && <NavBar />}
 
-      <div className={`${showNav ? "flex-1" : "w-full"} bg-gray-100`}>
+      {/* Contenido principal con margen izquierdo cuando hay navbar */}
+      <div className={`${showNav ? "ml-60" : ""} min-h-screen bg-gray-100`}>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/cuentas" element={<Cuentas />} />
+
+          {/* Rutas protegidas: solo accesibles si hay token */}
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cuentas"
+            element={
+              <PrivateRoute>
+                <Cuentas />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Si la ruta no existe, redirigimos a /login o /dashboard según exista token */}
+          <Route
+            path="*"
+            element={
+              localStorage.getItem("token") ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
         </Routes>
       </div>
     </div>

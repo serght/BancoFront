@@ -1,5 +1,3 @@
-// src/api/admin.js
-
 import axios from "axios";
 
 const adminApi = axios.create({
@@ -18,11 +16,7 @@ adminApi.interceptors.request.use((cfg) => {
   return cfg;
 });
 
-// GET http://localhost:8081/api/cuentas
+
 export const getCuentas = () => adminApi.get("/api/cuentas");
-
-// GET http://localhost:8081/api/admin/transacciones
 export const getTransacciones = () => adminApi.get("/api/admin/transacciones");
-
-// (Opcional) GET http://localhost:8081/api/admin/compras
 export const getCompras = () => adminApi.get("/api/admin/compras");

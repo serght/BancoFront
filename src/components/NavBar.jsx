@@ -1,7 +1,9 @@
-// src/components/NavBar.jsx
-
-import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { 
+  LayoutDashboard, 
+  CreditCard, 
+  LogOut 
+} from "lucide-react";
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -12,55 +14,58 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="w-48 bg-white border-r shadow-xl flex flex-col">
+    <nav className="fixed top-0 left-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-10">
       {/* Encabezado */}
-      <div className="px-4 py-6 border-b">
-        <h2 className="text-lg font-semibold text-blue-800">Menú</h2>
+      <div className="px-6 py-8 border-b border-gray-100">
+        <h1 className="text-xl font-bold text-teal-600">Mi App Admin</h1>
       </div>
 
       {/* Opciones de navegación */}
-      <ul className="flex-1 flex flex-col mt-2">
-        <li>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) =>
-              `block px-4 py-3 mx-2 my-1 rounded-md text-center text-sm font-medium ${
-                isActive
-                  ? "bg-blue-800 text-white"
-                  : "text-blue-800 hover:bg-blue-100"
-              }`
-            }
-          >
-            Dashboard
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/cuentas"
-            className={({ isActive }) =>
-              `block px-4 py-3 mx-2 my-1 rounded-md text-center text-sm font-medium ${
-                isActive
-                  ? "bg-blue-800 text-white"
-                  : "text-blue-800 hover:bg-blue-100"
-              }`
-            }
-          >
-            Lista de Cuentas
-          </NavLink>
-        </li>
-        <li>
-          <button
-            onClick={handleLogout}
-            className="w-full text-left block px-4 py-3 mx-2 my-1 rounded-md text-center text-sm font-medium text-red-600 hover:bg-red-50"
-          >
-            Logout
-          </button>
-        </li>
-      </ul>
+      <div className="flex-1 px-4 py-6">
+        <ul className="space-y-2">
+          <li>
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                }`
+              }
+            >
+              <LayoutDashboard size={20} />
+              Dashboard
+            </NavLink>
+          </li>
+          
+          <li>
+            <NavLink
+              to="/cuentas"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                }`
+              }
+            >
+              <CreditCard size={20} />
+              Lista de Cuentas
+            </NavLink>
+          </li>
+        </ul>
+      </div>
 
-      {/* Pie de página */}
-      <div className="px-4 py-4 border-t text-gray-500 text-xs text-center">
-        &copy; 2025 Mi App
+      {/* Logout en la parte inferior */}
+      <div className="px-4 pb-6">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-200"
+        >
+          <LogOut size={20} />
+          Logout
+        </button>
       </div>
     </nav>
   );

@@ -11,43 +11,46 @@ export default function Dashboard() {
   useEffect(() => {
     document.title = "Dashboard";
 
-    // ① TRAER TOTAL DE CUENTAS (equivale a “usuarios”)
+    console.log("📌 Dashboard mounted: solicitando /api/cuentas…");
     getCuentas()
       .then((r) => {
-        setCuentas(r.data.length);
+        console.log("✅ /api/cuentas →", r.status, r.data);
+        setCuentas(Array.isArray(r.data) ? r.data.length : 0);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("❌ Error en /api/cuentas:", err.response?.status, err.response?.data);
         setCuentas(0);
       });
 
-    // ② TRAER TRANSACCIONES
+    console.log("📌 Solicitando /api/admin/transacciones…");
     getTransacciones()
       .then((r) => {
-        const tx = r.data; // arreglo de Transaccion {id, estado, monto, fecha, ...}
+        console.log("✅ /api/admin/transacciones →", r.status, r.data);
+        const tx = Array.isArray(r.data) ? r.data : [];
 
-        // FILTRAR APROBADAS
         const aprobadas = tx.filter((t) => t.estado === "APROBADA");
-        // FILTRAR RECHAZADAS
         const rechazadas = tx.filter((t) => t.estado === "RECHAZADA");
 
-        // CONTAR cada grupo
         setAprob(aprobadas.length);
         setRechaz(rechazadas.length);
 
-        // SUMAR monto de las aprobadas (asegúrate de que t.monto sea número o convertible)
         const sumaMonto = aprobadas.reduce(
           (sum, t) => sum + (Number(t.monto) || 0),
           0
         );
         setMonto(sumaMonto);
 
-        // ORDENAR POR FECHA Y TOMAR LAS 10 MÁS RECIENTES
         const ultimas10 = [...tx]
           .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
           .slice(0, 10);
         setUltTx(ultimas10);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error(
+          "❌ Error en /api/admin/transacciones:",
+          err.response?.status,
+          err.response?.data
+        );
         setAprob(0);
         setRechaz(0);
         setMonto(0);

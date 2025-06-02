@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { login } from '../api/auth';
-import { Link } from 'react-router-dom';  // <== IMPORTANTE
-import '../styles/form.css'; 
+import { Link } from 'react-router-dom';
 
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -14,7 +13,7 @@ function Login() {
     e.preventDefault();
     try {
       const response = await login(formData);
-      localStorage.setItem('token', response.data.token); 
+      localStorage.setItem('token', response.data.token);
       alert('Login exitoso');
     } catch (error) {
       console.error(error);
@@ -23,10 +22,17 @@ function Login() {
   };
 
   return (
-    <div className="container">
-      <form onSubmit={handleSubmit} className="form">
-        <h2 className="title">Sign in</h2>
-        <p className="subtitle">Ingresa tus datos</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      {/* Card */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm bg-white rounded-xl shadow-lg p-8 space-y-5"
+      >
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800">Sign in</h2>
+          <p className="text-sm text-gray-500 mt-1">Ingresa tus datos</p>
+        </div>
+
         <input
           type="text"
           name="username"
@@ -34,8 +40,9 @@ function Login() {
           value={formData.username}
           onChange={handleChange}
           required
-          className="input"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
+
         <input
           type="password"
           name="password"
@@ -43,13 +50,22 @@ function Login() {
           value={formData.password}
           onChange={handleChange}
           required
-          className="input"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
-        <button type="submit" className="button">Sign in</button>
-        {/* Aquí el Link para registrar */}
-        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+
+        <button
+          type="submit"
+          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition-colors"
+        >
+          Sign in
+        </button>
+
+        <p className="text-center text-sm text-gray-600">
           ¿No tienes cuenta?{' '}
-          <Link to="/register" style={{ color: '#047857', textDecoration: 'underline' }}>
+          <Link
+            to="/register"
+            className="text-emerald-700 hover:text-emerald-800 underline font-medium"
+          >
             Regístrate
           </Link>
         </p>

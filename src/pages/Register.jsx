@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { register } from '../api/auth';
-import { useNavigate, Link } from 'react-router-dom';  // <== IMPORTANTE
-import '../styles/form.css';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -12,7 +11,7 @@ function Register() {
     clave: '',
   });
 
-  const navigate = useNavigate(); // <== Hook de navegación
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,7 +23,7 @@ function Register() {
       const response = await register(formData);
       localStorage.setItem('token', response.data.token);
       alert('Registro exitoso');
-      navigate('/login'); // <== Redirigir a login
+      navigate('/login');
     } catch (error) {
       console.error(error);
       alert('Error al registrarse');
@@ -32,10 +31,16 @@ function Register() {
   };
 
   return (
-    <div className="container">
-      <form onSubmit={handleSubmit} className="form">
-        <h2 className="title">Create an Account</h2>
-        <p className="subtitle">Crea tu cuenta de empleado</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm bg-white rounded-xl shadow-lg p-8 space-y-5"
+      >
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800">Create an Account</h2>
+          <p className="text-sm text-gray-500 mt-1">Crea tu cuenta de empleado</p>
+        </div>
+
         <input
           type="text"
           name="numeroDocumento"
@@ -43,8 +48,9 @@ function Register() {
           value={formData.numeroDocumento}
           onChange={handleChange}
           required
-          className="input"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
+
         <input
           type="text"
           name="nombres"
@@ -52,8 +58,9 @@ function Register() {
           value={formData.nombres}
           onChange={handleChange}
           required
-          className="input"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
+
         <input
           type="text"
           name="apellidos"
@@ -61,8 +68,9 @@ function Register() {
           value={formData.apellidos}
           onChange={handleChange}
           required
-          className="input"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
+
         <input
           type="text"
           name="numeroTelefono"
@@ -70,8 +78,9 @@ function Register() {
           value={formData.numeroTelefono}
           onChange={handleChange}
           required
-          className="input"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
+
         <input
           type="password"
           name="clave"
@@ -79,13 +88,22 @@ function Register() {
           value={formData.clave}
           onChange={handleChange}
           required
-          className="input"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
-        <button type="submit" className="button">Register</button>
-        {}
-        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+
+        <button
+          type="submit"
+          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition-colors"
+        >
+          Register
+        </button>
+
+        <p className="text-center text-sm text-gray-600">
           ¿Ya tienes cuenta?{' '}
-          <Link to="/login" style={{ color: '#047857', textDecoration: 'underline' }}>
+          <Link
+            to="/login"
+            className="text-emerald-700 hover:text-emerald-800 underline font-medium"
+          >
             Inicia sesión
           </Link>
         </p>

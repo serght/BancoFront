@@ -28,6 +28,9 @@ function AppWrapper() {
       {/* Contenido principal con margen izquierdo cuando hay navbar */}
       <div className={`${showNav ? "ml-60" : ""} min-h-screen bg-gray-100`}>
         <Routes>
+          {/* Si se entra a "/", redirige automáticamente a "/login" */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 

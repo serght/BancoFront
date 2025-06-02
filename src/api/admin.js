@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const adminApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8081",
+  baseURL: "http://localhost:8081/api",
 });
 
 adminApi.interceptors.request.use((cfg) => {
@@ -17,6 +17,6 @@ adminApi.interceptors.request.use((cfg) => {
 });
 
 
-export const getCuentas = () => adminApi.get("/api/cuentas");
-export const getTransacciones = () => adminApi.get("/api/admin/transacciones");
-export const getCompras = () => adminApi.get("/api/admin/compras");
+export const getCuentas = () => adminApi.get("cuentas");
+export const getTransacciones = () => adminApi.get("/admin/transacciones");
+export const getCompras = () => adminApi.get("/admin/compras");

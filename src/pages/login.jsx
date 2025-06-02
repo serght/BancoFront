@@ -1,13 +1,9 @@
-// src/pages/login.jsx
+import { useState } from 'react';
+import { login } from '../api/auth';
+import { Link } from 'react-router-dom';
 
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { login } from "../api/auth";
-
-export default function Login() {
-  const [formData, setFormData] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
-  const navigate = useNavigate(); // ◀︎ Hook para redirigir
+function Login() {
+  const [formData, setFormData] = useState({ username: '', password: '' });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,19 +11,13 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // limpiar posible error previo
-
     try {
       const response = await login(formData);
-      
-      // 1) Guardar token
-      localStorage.setItem("token", response.data.token);
-
-      // 2) Redirigir a /dashboard
-      navigate("/dashboard");
-    } catch (err) {
-      console.error(err);
-      setError("Número de documento o clave incorrectos");
+      localStorage.setItem('token', response.data.token);
+      alert('Login exitoso');
+    } catch (error) {
+      console.error(error);
+      alert('Error al iniciar sesión');
     }
   };
 
@@ -42,10 +32,6 @@ export default function Login() {
           <h2 className="text-2xl font-bold text-gray-800">Sign in</h2>
           <p className="text-sm text-gray-500 mt-1">Ingresa tus datos</p>
         </div>
-
-        {error && (
-          <div className="text-red-600 text-sm text-center">{error}</div>
-        )}
 
         <input
           type="text"
@@ -75,7 +61,7 @@ export default function Login() {
         </button>
 
         <p className="text-center text-sm text-gray-600">
-          ¿No tienes cuenta?{" "}
+          ¿No tienes cuenta?{' '}
           <Link
             to="/register"
             className="text-emerald-700 hover:text-emerald-800 underline font-medium"
@@ -87,3 +73,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login;

@@ -1,5 +1,3 @@
-// src/pages/Dashboard.jsx
-
 import { useEffect, useState } from "react";
 import { getCuentas, getTransacciones } from "../api/admin";
 
@@ -13,23 +11,48 @@ export default function Dashboard() {
   useEffect(() => {
     document.title = "Dashboard";
 
-    getCuentas().then((r) => setCuentas(r.data.length));
+    // ① TRAER TOTAL DE CUENTAS (equivale a “usuarios”)
+    getCuentas()
+      .then((r) => {
+        setCuentas(r.data.length);
+      })
+      .catch(() => {
+        setCuentas(0);
+      });
 
-    getTransacciones().then((r) => {
-      const tx = r.data;
-      const ok = tx.filter((t) => t.estado === "APROBADA");
-      const no = tx.filter((t) => t.estado === "RECHAZADA");
+    // ② TRAER TRANSACCIONES
+    getTransacciones()
+      .then((r) => {
+        const tx = r.data; // arreglo de Transaccion {id, estado, monto, fecha, ...}
 
-      setAprob(ok.length);
-      setRechaz(no.length);
-      setMonto(ok.reduce((s, t) => s + (Number(t.monto) || 0), 0));
+        // FILTRAR APROBADAS
+        const aprobadas = tx.filter((t) => t.estado === "APROBADA");
+        // FILTRAR RECHAZADAS
+        const rechazadas = tx.filter((t) => t.estado === "RECHAZADA");
 
-      setUltTx(
-        [...tx]
+        // CONTAR cada grupo
+        setAprob(aprobadas.length);
+        setRechaz(rechazadas.length);
+
+        // SUMAR monto de las aprobadas (asegúrate de que t.monto sea número o convertible)
+        const sumaMonto = aprobadas.reduce(
+          (sum, t) => sum + (Number(t.monto) || 0),
+          0
+        );
+        setMonto(sumaMonto);
+
+        // ORDENAR POR FECHA Y TOMAR LAS 10 MÁS RECIENTES
+        const ultimas10 = [...tx]
           .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
-          .slice(0, 10)
-      );
-    });
+          .slice(0, 10);
+        setUltTx(ultimas10);
+      })
+      .catch(() => {
+        setAprob(0);
+        setRechaz(0);
+        setMonto(0);
+        setUltTx([]);
+      });
   }, []);
 
   return (
@@ -54,7 +77,7 @@ export default function Dashboard() {
         <Card label="Monto Aprobado" value={`$${monto.toFixed(2)}`} />
       </section>
 
-      {/* List */}
+      {/* Lista de últimas 10 transacciones */}
       <section className="bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-semibold mb-4">Últimas transacciones</h2>
         {ultTx.length === 0 ? (

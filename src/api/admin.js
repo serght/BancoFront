@@ -1,18 +1,30 @@
 import axios from 'axios';
 
-/* instancia para todo lo que viene de /api/admin */
+/* BaseURL apunta a la raíz de tu backend, NO a /api/admin */
 const adminApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081/api/admin',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081',
 });
 
-/* inyecta el token en cada request */
-adminApi.interceptors.request.use(cfg => {
+/* Inyecta token automáticamente en cada request (excepto /auth/login y /auth/register) */
+adminApi.interceptors.request.use((cfg) => {
   const t = localStorage.getItem('token');
-  if (t) cfg.headers.Authorization = `Bearer ${t}`;
+  if (
+    t &&
+    !cfg.url.startsWith('/auth/login') &&
+    !cfg.url.startsWith('/auth/register')
+  ) {
+    cfg.headers.Authorization = `Bearer ${t}`;
+  }
   return cfg;
 });
 
-/* ─── ENDPOINTS ───────────────────────────── */
-export const getCuentas       = () => adminApi.get('/cuentas');        // lista cuentas
-export const getTransacciones = () => adminApi.get('/transacciones');  // lista transacciones
-export const getCompras       = () => adminApi.get('/compras');        // si también necesitas compras
+/* ─── ENDPOINTS ─────────────────────────── */
+// GET http://localhost:8081/api/cuentas
+export const getCuentas = () => adminApi.get('/api/admin/cuentas');
+
+// GET http://localhost:8081/api/admin/transacciones
+export const getTransacciones = () =>
+  adminApi.get('/api/admin/transacciones');
+
+// (Opcional) GET http://localhost:8081/api/admin/compras
+export const getCompras = () => adminApi.get('/api/admin/compras');

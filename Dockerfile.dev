@@ -1,0 +1,17 @@
+# Dockerfile.dev
+
+FROM node:23-alpine
+
+WORKDIR /app
+
+# Copiamos solo package.json/lock.json para cachear deps
+COPY package*.json ./
+RUN npm install
+
+# Montaremos el resto como volumen, así no “frotamos” la imagen cada vez
+# COPY . .        ← omitimos, porque usaremos bind‐mount en docker-compose
+
+EXPOSE 5173
+
+# Levanta Vite en modo desarrollo y expone 0.0.0.0:5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

@@ -5,28 +5,34 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 import NavBar from "./components/NavBar";
 
-function App() {
-  return (
-    <Router>
-      {/* 1. Contenedor general en modo Flex */}
-      <div className="flex min-h-screen">
-        
-        {/* 2. NavBar ocupa toda la altura a la izquierda (w-48) */}
-        <NavBar />
+// Creamos un wrapper para detectar la ruta actual
+function AppWrapper() {
+  const location = useLocation();
+  const path = location.pathname;
 
-        {/* 3. Contenedor de contenido a la derecha: flex-grow para que llene el resto */}
-        <div className="flex-1 bg-gray-100">
-          {/* Aquí van las rutas */}
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/cuentas" element={<Cuentas />} />
-          </Routes>
-        </div>
+  // Mostramos NavBar solo si no estamos en /login ni /register
+  const showNav = path !== "/login" && path !== "/register";
+
+  return (
+    <div className="flex min-h-screen">
+      {showNav && <NavBar />}
+
+      <div className={`${showNav ? "flex-1" : "w-full" } bg-gray-100`}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/cuentas" element={<Cuentas />} />
+        </Routes>
       </div>
-    </Router>
+    </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppWrapper />
+    </Router>
+  );
+}

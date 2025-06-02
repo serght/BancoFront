@@ -17,3 +17,4 @@ export const getCuentas = () => API.get('');
 export const createCuenta = (data) => API.post('', data);
 export const updateCuenta = (id, data) => API.put(`/${id}`, data);
 export const deleteCuenta = (id) => API.delete(`/${id}`);
+export const getTransaccionesByCuenta = (cuentaId) => API.get(`/${cuentaId}/transacciones`);

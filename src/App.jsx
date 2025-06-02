@@ -1,8 +1,6 @@
-// src/App.jsx
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Cuentas from "./pages/Cuentas";
+import Cuentas from "./pages/cuentas";
 import Login from "./pages/login";
 import Register from "./pages/Register";
 import NavBar from "./components/NavBar";

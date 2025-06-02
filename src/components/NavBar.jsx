@@ -7,20 +7,18 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // 1. Borra el token
     localStorage.removeItem("token");
-    // 2. Lleva al usuario a /login
     navigate("/login");
   };
 
   return (
-    <nav className="h-screen w-48 bg-white border-r shadow-xl flex flex-col">
+    <nav className="w-48 bg-white border-r shadow-xl flex flex-col">
       {/* Encabezado */}
       <div className="px-4 py-6 border-b">
         <h2 className="text-lg font-semibold text-blue-800">Menú</h2>
       </div>
 
-      {/* Enlaces */}
+      {/* Opciones de navegación */}
       <ul className="flex-1 flex flex-col mt-2">
         <li>
           <NavLink

@@ -1,20 +1,9 @@
-import axios from 'axios';
+// src/api/cuentas.ts
+import { makeApi } from "../lib/http";
+const cuentasApi = makeApi("/api/cuentas");
 
-
-const API = axios.create({
-  baseURL: 'http://localhost:8081/api/cuentas',
-});
-
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export const getCuentas = () => API.get('');
-export const createCuenta = (data) => API.post('', data);
-export const updateCuenta = (id, data) => API.put(`/${id}`, data);
-export const deleteCuenta = (id) => API.delete(`/${id}`);
-export const getTransaccionesByCuenta = (cuentaId) => API.get(`/${cuentaId}/transacciones`);
+export const getCuentas               = ()            => cuentasApi.get("");
+export const createCuenta             = (d)           => cuentasApi.post("", d);
+export const updateCuenta             = (id, d)       => cuentasApi.put(`/${id}`, d);
+export const deleteCuenta             = (id)          => cuentasApi.delete(`/${id}`);
+export const getTransaccionesByCuenta = (id)          => cuentasApi.get(`/${id}/transacciones`);

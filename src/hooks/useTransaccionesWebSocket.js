@@ -1,7 +1,7 @@
-// src/hooks/useTransaccionesWebSocket.js
 import { useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { BASE_URL } from "../lib/http";
 
 export function useTransaccionesWebSocket() {
   const [transacciones, setTransacciones] = useState([]);
@@ -9,38 +9,35 @@ export function useTransaccionesWebSocket() {
   const clientRef = useRef(null);
 
   useEffect(() => {
-    const baseUrl =
-      import.meta.env.VITE_API_URL || "http://localhost:8081";
-    const sock = new SockJS(`${baseUrl.replace(/\/$/, "")}/ws`);
-
+    console.log("STOMP: iniciando SOCKJS en", `${BASE_URL}/ws`);
+    const sock = new SockJS(`${BASE_URL}/ws`);
     const token = localStorage.getItem("token");
 
     const client = new Client({
       webSocketFactory: () => sock,
       reconnectDelay: 5000,
-      connectHeaders: token
-        ? { Authorization: `Bearer ${token}` } 
-        : {},
-      onConnect: () => setConectado(true),
-      onStompError: (frame) =>
-        console.error("STOMP error →", frame.headers.message),
+      connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
+      onConnect: () => {
+        console.log("STOMP: conectado, suscribiendo a /topic/transacciones");
+        setConectado(true);
+        client.subscribe("/topic/transacciones", (msg) => {
+          console.log("STOMP: recibí mensaje →", msg.body);
+          try {
+            const nueva = JSON.parse(msg.body);
+            setTransacciones((prev) => [nueva, ...prev]);
+          } catch (err) {
+            console.error("Parse JSON:", err);
+          }
+        });
+      },
+      onStompError: (frame) => console.error("STOMP error:", frame.headers.message),
     });
 
-    client.onWebSocketError = (e) => console.error("WebSocket error:", e);
+    client.onWebSocketError = (e) => console.error("WS error:", e);
+
+    console.log("STOMP: activando cliente…");
     client.activate();
     clientRef.current = client;
-
-    client.onConnect = () => {
-      client.subscribe("/topic/transacciones", (msg) => {
-        try {
-          const nueva = JSON.parse(msg.body);
-          setTransacciones((prev) => [nueva, ...prev]); // prepend
-        } catch (err) {
-          console.error("Parse JSON Tx:", err);
-        }
-      });
-    };
-
     return () => clientRef.current?.deactivate();
   }, []);
 
